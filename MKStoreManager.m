@@ -50,7 +50,7 @@
 
 @interface MKStoreManager () //private methods and properties
 
-@property (nonatomic, copy) void (^onTransactionCancelled)();
+@property (nonatomic, copy) void (^onTransactionCancelled)(NSError *error);
 @property (nonatomic, copy) void (^onTransactionCompleted)(NSString *productId, NSData* receiptData, NSArray* downloads);
 
 @property (nonatomic, copy) void (^onRestoreFailed)(NSError* error);
@@ -250,27 +250,14 @@ static MKStoreManager* _sharedStoreManager;
   
   NSMutableArray *productsArray = [NSMutableArray array];
   NSArray *consumables = [[[self storeKitItems] objectForKey:@"Consumables"] allKeys];
-  NSArray *consumableNames = [self allConsumableNames];
   NSArray *nonConsumables = [[self storeKitItems] objectForKey:@"Non-Consumables"];
   NSArray *subscriptions = [[[self storeKitItems] objectForKey:@"Subscriptions"] allKeys];
   
   [productsArray addObjectsFromArray:consumables];
-  [productsArray addObjectsFromArray:consumableNames];
   [productsArray addObjectsFromArray:nonConsumables];
   [productsArray addObjectsFromArray:subscriptions];
   
   return productsArray;
-}
-
-+ (NSArray *)allConsumableNames {
-    NSMutableSet *consumableNames = [[NSMutableSet alloc] initWithCapacity:0];
-    NSDictionary *consumables = [[self storeKitItems] objectForKey:@"Consumables"];
-    for (NSDictionary *consumable in [consumables allValues]) {
-        NSString *name = [consumable objectForKey:@"Name"];
-        [consumableNames addObject:name];
-    }
-    
-    return [consumableNames allObjects];
 }
 
 - (BOOL) removeAllKeychainData {
@@ -432,7 +419,7 @@ static MKStoreManager* _sharedStoreManager;
 
 - (void) buyFeature:(NSString*) featureId
          onComplete:(void (^)(NSString*, NSData*, NSArray*)) completionBlock
-        onCancelled:(void (^)(void)) cancelBlock
+        onCancelled:(void (^)(NSError *error)) cancelBlock
 {
   self.onTransactionCompleted = completionBlock;
   self.onTransactionCancelled = cancelBlock;
@@ -636,7 +623,7 @@ static MKStoreManager* _sharedStoreManager;
       if(!receiptData) {
         if(self.onTransactionCancelled)
         {
-          self.onTransactionCancelled(productIdentifier);
+          self.onTransactionCancelled(nil);
         }
         else
         {
@@ -662,7 +649,7 @@ static MKStoreManager* _sharedStoreManager;
        {
          if(self.onTransactionCancelled)
          {
-           self.onTransactionCancelled(productIdentifier);
+           self.onTransactionCancelled(nil);
          }
          else
          {
@@ -753,9 +740,10 @@ static MKStoreManager* _sharedStoreManager;
 #endif
 	
   [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    
   
   if(self.onTransactionCancelled)
-    self.onTransactionCancelled();
+    self.onTransactionCancelled(transaction.error);
 }
 
 - (void) completeTransaction: (SKPaymentTransaction *)transaction

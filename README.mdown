@@ -30,9 +30,7 @@ To purchase a feature, just call
 
 ``` objective-c
 [[MKStoreManager sharedManager] buyFeature:kFeatureAId 
-                                onComplete:^(NSString* purchasedFeature, 
-                                             NSData* purchasedReceipt, 
-                                             NSArray* availableDownloads)
+                                onComplete:^(NSString* purchasedFeature)
  {
      NSLog(@"Purchased: %@", purchasedFeature);
  }

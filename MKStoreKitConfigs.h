@@ -33,27 +33,15 @@
 //	3) or a tweet mentioning @mugunthkumar
 //	4) A paypal donation to mugunth.kumar@gmail.com
 
-// To avoid making mistakes map plist entries to macroses as below and use them
-// instead of keys itself.
-//
-// #define kConsumableBaseFeatureId @"com.mycompany.myapp."
-// #define kFeatureAId @"com.mugunthkumar.caltasks.propack"
-// #define kConsumableFeatureBId @"com.mycompany.myapp.005"
-// #define FishBasket @"FishBasket"
+// To avoid making mistakes map plist entries to macros on this page.
+// when you include MKStoreManager in your clss, these macros get defined there
 
-#ifndef SERVER_PRODUCT_MODEL
-    #define SERVER_PRODUCT_MODEL 0
-#endif
+#define kConsumableBaseFeatureId @""
+#define kFeatureAId @"com.youboox.subscription.monthly.standard"
+#define kConsumableFeatureBId @""
 
-#ifndef OWN_SERVER
-    #define OWN_SERVER nil
-#endif
+#define SERVER_PRODUCT_MODEL 0
+#define OWN_SERVER nil
+#define REVIEW_ALLOWED 0
 
-#ifndef REVIEW_ALLOWED
-    #define REVIEW_ALLOWED 0
-#endif
-
-#warning Shared Secret Missing Ignore this warning if you don't use auto-renewable subscriptions
-#ifndef kSharedSecret
-    #define kSharedSecret @"<FILL IN YOUR SHARED SECRET HERE>"
-#endif
+#define kSharedSecret @"c3a9cf409f8f4b9aa4b0be66cc97111c"

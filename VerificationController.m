@@ -1,4 +1,5 @@
 #import "VerificationController.h"
+#import "OpenUDID.h"
 
 static VerificationController *singleton;
 
@@ -333,8 +334,26 @@ static VerificationController *singleton;
         }
 #endif
     } else {
-        // Pre iOS 6 
-        NSString *localIdentifier           = [UIDevice currentDevice].uniqueIdentifier;
+        // Pre iOS 6
+        /*NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *UUID = @"";
+        
+        if (![defaults valueForKey:@"UUID"])
+        {
+            CFUUIDRef UUIDRef = CFUUIDCreate(kCFAllocatorDefault);
+            CFStringRef UUIDSRef = CFUUIDCreateString(kCFAllocatorDefault, UUIDRef);
+            UUID = [NSString stringWithFormat:@"%@", UUIDSRef];
+            
+            [defaults setObject:UUID forKey:@"UUID"];
+        }
+        else {
+            UUID = [defaults valueForKey:@"UUID"];
+        }*/
+        
+        NSString *UUID = [OpenUDID value];
+        
+        
+        NSString *localIdentifier           = UUID;
         NSString *purchaseInfoUniqueId      = [purchaseInfoFromTransaction objectForKey:@"unique-identifier"];
 
         
@@ -720,6 +739,7 @@ char* base64_encode(const void* buf, size_t size)
 #warning Implement this function.
 void * base64_decode(const char* s, size_t * data_len)
 { return NULL; }
+
 
 
 @end
